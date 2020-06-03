@@ -1,16 +1,21 @@
 main {
     width: 500px;
-    background-color: lightblue;
+    background-color: gray;
     height: 600px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 #display-container {
     height: 20%;
     background-color: black;
+    border-radius: 5px;
 }
 
 #keys-container{
     height: 80%;
+    background-color: gray;
 }
 
 table {
@@ -18,8 +23,21 @@ table {
     height: 100%;
 }
 
+#operators td {
+    background-color: rgb(180, 180, 180) ;
+}
+
 td {
     border: 1px solid gray;
     width: 25%;
+    height: 20%;
+    text-align: center;
+    font-size: 50px;
+    border-radius: 4px;
+    background-color: rgb(220, 220, 220);
+}
+
+#equals {
+    background-color: orange;
 }
 
