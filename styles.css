@@ -12,6 +12,7 @@ main {
     background-color: black;
     border-radius: 5px;
     text-align: end;
+    color: white;
 }
 
 #keys-container{
