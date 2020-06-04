@@ -40,11 +40,12 @@ calculator.display = 0;
 //create button objects and insert into calculator
 
 const numberButtonID = ['zero','one','two','three','four','five','six','seven','eight','nine','decimal']  //these values match the IDs of my numerical buttons in HTML
-
+const numberButtonValue = [0,1,2,3,4,5,6,7,8,9, '.']  // values assigned to the respective buttons
 class NumberButton { //class to produce button objects from
-    constructor(name) {
+    constructor(name, value) {
         this.name = name;
         this.source = document.getElementById(name);
+        this.value = value;
     }
     displayNumber(){
         this.source.onclick( () => {
@@ -52,11 +53,23 @@ class NumberButton { //class to produce button objects from
         })
     }
 }
+// iterate through arrays and use data to form button instances
+numberButtonID.forEach( (button, index) => calculator._buttons._numbers.push(new NumberButton(button, numberButtonValue[index])) );
 
-numberButtonID.forEach( button => calculator._buttons._numbers.push(new NumberButton(button)) );  //create an instance of the button using 
+
 
 // Maybe create a superclass for all buttons with the basic constructor, then create subclasses for numbers, operators etc.
 // Operators will have unique functions but will share similar behaviour with respect to the display
 // clear and equals will be their own buttons as they're unlike the others.
 
+// Things to do:
+// - get numbers keys to appear in the display. Treat them like strings and concatenate them into the calculator.display property. Decimal is classed as a number.
+// - create a function which tests to ensure that a number cannot begin with >1 zero and decimal point cannot appear twice or more.
+// - 
+//
+//
+//
+//
+//
+//
 //
