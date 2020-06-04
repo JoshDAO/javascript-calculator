@@ -25,8 +25,12 @@ const calculator = {
         return this._buttons._numbers;
     },
     numberButtonDisplay(event) {
-        calculator._display.innerHTML += event.target.value;
-        console.log('logged')
+        if (calculator.display === '0' && event.target !== decimal) {
+            calculator._display.innerHTML = event.target.value;
+        } else {
+            calculator._display.innerHTML += event.target.value;
+            console.log(calculator.display);
+        }
     },
     
     resetDisplay() {
@@ -46,28 +50,6 @@ calculator.numberButtons.forEach( button => button.onclick = calculator.numberBu
 
 
 
-
-//create button objects and insert into calculator
-
-
-const numberButtonFactory = (name, value) => {
-    return {
-         name,
-         value,
-         source: document.getElementById(name)
-    }
-}
-
-        
-//     }
-// }
-// iterate through arrays and use data to form button instances
-//numberButtonID.forEach( (button, index) => calculator._buttons._numbers.push(new NumberButton(button, numberButtonValue[index])) );
-
-// calculator.numberButtons.forEach( button => button.source.onclick = calculator.numberButtonPress)
-// let one = document.getElementById('one');
-// calculator.numberButtons.push(one)
-// one.value = 1;
 
 // Maybe create a superclass for all buttons with the basic constructor, then create subclasses for numbers, operators etc.
 // Operators will have unique functions but will share similar behaviour with respect to the display
