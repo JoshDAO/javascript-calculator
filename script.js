@@ -25,6 +25,10 @@ const calculator = {
         return this._buttons._numbers;
     },
     numberButtonDisplay(event) {
+        if (event.target === decimal && calculator.display.indexOf('.') !== -1){
+            return;
+        };
+
         if (calculator.display === '0' && event.target !== decimal) {
             calculator._display.innerHTML = event.target.value;
         } else {
