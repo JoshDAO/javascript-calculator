@@ -31,11 +31,14 @@ const calculator = {
     },
     buttonPress(obj) {
         this.display(button);
+    },
+    resetDisplay() {
+        this._display.innerHTML = 0;
     }
 }
 //make sure the calculator outputs '0' in the beginning
 
-calculator.display = 0;
+calculator.resetDisplay();
 
 //create button objects and insert into calculator
 
