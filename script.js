@@ -63,6 +63,9 @@ const calculator = {
         calculator._calculatedDisplay.innerHTML = ""; //remove the small display until further calculation
     },
     calculateAddition(expression) {
+        if (expression.startsWith('-')) {
+            expression = "1*-1* " +expression.substring(1);
+        }
         const splitExpression = expression.split('+');
         splitExpression.forEach( (element, index) => {
             if (element.endsWith('/') || element.endsWith('*')){
