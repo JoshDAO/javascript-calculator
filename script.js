@@ -7,8 +7,8 @@ const calculator = {
         _numbers: [ zero, one, two, three, four, five, six, seven, eight, nine, decimal],  
         _operators: [add, subtract, multiply, divide, clear, equals],    
     },
-    _memory: 0,
-    _memoryOperation = null,
+    _memory: 0,  //this will contain the first operand while the second operand is inputted
+    _memoryOperation = null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
 
 
     get display() {  // basic getter function
@@ -39,7 +39,7 @@ const calculator = {
     },
     set memoryOperation(newOperator){
         this._memoryOperation = newOperator
-    }
+    },
     numberButtonDisplay(event) {
         if (event.target === decimal && calculator.display.indexOf('.') !== -1){ // check to see if there is already a decimal point in the dislayed number
             return;  //dont accept another decimal input
@@ -58,7 +58,7 @@ const calculator = {
             this.display = 0
 
         }
-    }
+    },
 
     resetDisplay(event) { //used for clear button
         calculator._display.innerHTML = '0'
@@ -80,6 +80,10 @@ calculator.numberButtons.forEach( button => button.onclick = calculator.numberBu
 //fill operator buttons array
 let operatorList = document.querySelectorAll('.js-operator');
 calculator.operatorButtons = operatorList
+calculator.operatorButtons.add.value = '+';  //add values to be stored in memoryOperation
+calculator.operatorButtons.subtract.value = '-';
+calculator.operatorButtons.multiply.value = '*';
+calculator.operatorButtons.divide.value = '/';
 
 
 //-----BUTTON EVENT LISTENERS-----
