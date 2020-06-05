@@ -59,10 +59,35 @@ const calculator = {
         calculator._memoryOperation = event.target.value;    //will store the appropriate operator in operatorMemory, so when equals is hit, we know which operator to use.
         calculator._startNewDisplay = true;
     },
+    calculate(event) {
+        if ( !calculator._memory || !calculator._memoryOperation) {
+            return
+        };
+        switch (calculator._memoryOperation) {
+            case '+':
+                calculator._display.innerHTML = parseFloat(calculator._memory) + parseFloat(calculator._display.innerHTML)
+                calculator._memory = calculator._display.innerHTML;
+                break;
+            case '-':
+                calculator._display.innerHTML = parseFloat(calculator._memory) - parseFloat(calculator._display.innerHTML)
+                calculator._memory = calculator._display.innerHTML;
+                break;
+            case '*':
+                calculator._display.innerHTML = parseFloat(calculator._memory) * parseFloat(calculator._display.innerHTML)
+                calculator._memory = calculator._display.innerHTML;
+                break;
+            case '/':
+                calculator._display.innerHTML = parseFloat(calculator._memory) / parseFloat(calculator._display.innerHTML)
+                calculator._memory = calculator._display.innerHTML;
+                break;
+        }
+    },
     
 
     resetDisplay(event) { //used for clear button
         calculator._display.innerHTML = '0'
+        calculator._memory = 0;
+        calculator._memoryOperation = null;
         console.log('logged'); 
     }
 }
@@ -92,11 +117,11 @@ calculator.operatorButtons[3].value = '/';
 //add clear button functionality
 clear.onclick = calculator.resetDisplay
 
-//add addition functionalityy
+//add general oprator button functionality
 calculator.operatorButtons.slice(0,4).forEach( operatorButton => operatorButton.onclick = calculator.operatorOnPress); //add event listener to each of 4 operator buttons
 
 
-
+equals.onclick = calculator.calculate;
 
 
 // Maybe create a superclass for all buttons with the basic constructor, then create subclasses for numbers, operators etc.
