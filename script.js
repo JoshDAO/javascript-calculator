@@ -7,10 +7,11 @@ const calculator = {
         _numbers: [ zero, one, two, three, four, five, six, seven, eight, nine, decimal],  
         _operators: [add, subtract, multiply, divide, clear, equals],    
     },
-    _memory: null,  //this will contain the first operand while the second operand is inputted
-    _memoryOperation: null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
-    _startNewDisplay: false, //will ensure display is overwritten after hitting an operator
-    _calculated: null,
+//    _memory: null,  //this will contain the first operand while the second operand is inputted
+//    _memoryOperation: null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
+//    _startNewDisplay: false, //will ensure display is overwritten after hitting an operator
+    _calculatedDisplay: document.getElementById('current-result'), // will dynamically show current answer
+    _calculation: "",
 
     get display() {  // basic getter function
         return this._display.innerHTML;
@@ -29,18 +30,25 @@ const calculator = {
     get operatorButtons() {
         return this._buttons._operators;
     },
-    get memory(){
-        return this._memory
+    // get memory(){
+    //     return this._memory
+    // },
+    // set memory(newMemory){
+    //     this._memory = newMemory;
+    // },
+    // get memoryOperation(){
+    //     return this._memoryOperation
+    // },
+    // set memoryOperation(newOperator){
+    //     this._memoryOperation = newOperator
+    // },
+    get calculatedDisplay() {
+        return this._calculatedDisplay.innerHTML;
     },
-    set memory(newMemory){
-        this._memory = newMemory;
+    set calculatedDisplay(newValue) {
+        this._calculatedDisplay.innerHTML = newValue;
     },
-    get memoryOperation(){
-        return this._memoryOperation
-    },
-    set memoryOperation(newOperator){
-        this._memoryOperation = newOperator
-    },
+
     numberButtonDisplay(event) {
         if (event.target === decimal && calculator.display.indexOf('.') !== -1){ // check to see if there is already a decimal point in the dislayed number
             return;  //dont accept another decimal input
@@ -53,6 +61,7 @@ const calculator = {
             calculator._display.innerHTML += event.target.value; // else concatenate
         
         }
+        calculator._calculation += event.target.value;
     },
     operatorOnPress(event) {
         //calculator.calculate()
@@ -60,30 +69,31 @@ const calculator = {
         //calculator._memoryOperation = event.target.value;    //will store the appropriate operator in operatorMemory, so when equals is hit, we know which operator to use.
         //calculator._startNewDisplay = true;
         calculator._display.innerHTML += event.target.value;
+        calculator._calculation += event.target.value
     },
-    calculate(event) {
-        if ( !calculator._memory || !calculator._memoryOperation) {
-            return
-        };
-        switch (calculator._memoryOperation) {
-            case '+':
-                calculator._display.innerHTML = parseFloat(calculator._memory) + parseFloat(calculator._display.innerHTML)
-                calculator._memory = calculator._display.innerHTML;
-                break;
-            case '-':
-                calculator._display.innerHTML = parseFloat(calculator._memory) - parseFloat(calculator._display.innerHTML)
-                calculator._memory = calculator._display.innerHTML;
-                break;
-            case '*':
-                calculator._display.innerHTML = parseFloat(calculator._memory) * parseFloat(calculator._display.innerHTML)
-                calculator._memory = calculator._display.innerHTML;
-                break;
-            case '/':
-                calculator._display.innerHTML = parseFloat(calculator._memory) / parseFloat(calculator._display.innerHTML)
-                calculator._memory = calculator._display.innerHTML;
-                break;
-        }
-    },
+    // calculate(event) {
+    //     if ( !calculator._memory || !calculator._memoryOperation) {
+    //         return
+    //     };
+    //     switch (calculator._memoryOperation) {
+    //         case '+':
+    //             calculator._display.innerHTML = parseFloat(calculator._memory) + parseFloat(calculator._display.innerHTML)
+    //             calculator._memory = calculator._display.innerHTML;
+    //             break;
+    //         case '-':
+    //             calculator._display.innerHTML = parseFloat(calculator._memory) - parseFloat(calculator._display.innerHTML)
+    //             calculator._memory = calculator._display.innerHTML;
+    //             break;
+    //         case '*':
+    //             calculator._display.innerHTML = parseFloat(calculator._memory) * parseFloat(calculator._display.innerHTML)
+    //             calculator._memory = calculator._display.innerHTML;
+    //             break;
+    //         case '/':
+    //             calculator._display.innerHTML = parseFloat(calculator._memory) / parseFloat(calculator._display.innerHTML)
+    //             calculator._memory = calculator._display.innerHTML;
+    //             break;
+    //     }
+    // },
     
 
     resetDisplay(event) { //used for clear button
@@ -127,6 +137,7 @@ calculator.operatorButtons.slice(0,4).forEach( operatorButton => operatorButton.
 
 
 equals.onclick = calculator.calculate;
+
 
 
 // Maybe create a superclass for all buttons with the basic constructor, then create subclasses for numbers, operators etc.
