@@ -8,7 +8,7 @@ const calculator = {
         _operators: [add, subtract, multiply, divide, clear, equals],    
     },
     _memory: 0,  //this will contain the first operand while the second operand is inputted
-    _memoryOperation = null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
+    _memoryOperation: null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
 
 
     get display() {  // basic getter function
@@ -52,12 +52,8 @@ const calculator = {
         
         }
     },
-    operatorFunctions : {
-        '+'(){
-            this.memory = parseFloat(this.display);
-            this.display = 0
-
-        }
+    operatorFunctions(event) {
+        calculator;
     },
 
     resetDisplay(event) { //used for clear button
@@ -80,10 +76,10 @@ calculator.numberButtons.forEach( button => button.onclick = calculator.numberBu
 //fill operator buttons array
 let operatorList = document.querySelectorAll('.js-operator');
 calculator.operatorButtons = operatorList
-calculator.operatorButtons.add.value = '+';  //add values to be stored in memoryOperation
-calculator.operatorButtons.subtract.value = '-';
-calculator.operatorButtons.multiply.value = '*';
-calculator.operatorButtons.divide.value = '/';
+calculator.operatorButtons[0].value = '+';  //add values to be stored in memoryOperation
+calculator.operatorButtons[1].value = '-';
+calculator.operatorButtons[2].value = '*';
+calculator.operatorButtons[3].value = '/';
 
 
 //-----BUTTON EVENT LISTENERS-----
