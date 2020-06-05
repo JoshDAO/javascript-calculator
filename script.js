@@ -45,8 +45,8 @@ const calculator = {
     get calculatedDisplay() {
         return this._calculatedDisplay.innerHTML;
     },
-    set calculatedDisplay(newValue) {
-        this._calculatedDisplay.innerHTML = newValue;
+    set calculatedDisplay(expression) {
+        this._calculatedDisplay.innerHTML = result //will obtain result value in another method
     },
 
     numberButtonDisplay(event) {
@@ -100,6 +100,34 @@ const calculator = {
         calculator._display.innerHTML = '0'
         calculator._memory = 0;
         calculator._memoryOperation = null;
+    },
+    calculateAddition(expression) {
+        const splitExpression = expression.split('+');
+        const numberExpression = splitExpression.map( element => this.calculateSubtraction(element));
+        console.log(numberExpression);
+        const result = numberExpression.reduce( (accumulator, currentValue) => {return accumulator + currentValue}, 0);
+        return result;
+    },
+    calculateSubtraction(expression) {
+        const splitExpression = expression.split('-');
+        const numberExpression = splitExpression.map( element =>  this.calculateMultiplication(element));
+
+        const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator - currentValue}, numberExpression[0] ); // we need to use the first element as initialValue and only subtract subsequent
+        return result;
+    },
+    calculateMultiplication(expression) {
+        const splitExpression = expression.split('*');
+        const numberExpression = splitExpression.map( element => this.calculateDivision(element));
+        //console.log(numberExpression);
+        const result = numberExpression.reduce( (accumulator, currentValue) => { return accumulator * currentValue}, 1 ); // use 1 as a constant to multiply everything by
+        return result;
+    },
+    calculateDivision(expression) {
+        const splitExpression = expression.split('/');
+        const numberExpression = splitExpression.map( element => parseFloat(element));
+        //console.log(numberExpression);
+        const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator / currentValue}, numberExpression[0] );
+        return result;
     }
 }
 //
