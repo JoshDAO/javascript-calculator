@@ -5,10 +5,11 @@ const calculator = {
     _display: document.getElementById('display'),  //this will be the property that will be updated as buttons are pushed
     _buttons: {
         _numbers: [ zero, one, two, three, four, five, six, seven, eight, nine, decimal],  
-        _operators: ['add','subtract','multiply','divide'], 
-        _clear: {},
-        _equals: {}
+        _operators: [add, subtract, multiply, divide, clear, equals],    
     },
+    _memory: 0,
+    _memoryOperation = null,
+
 
     get display() {  // basic getter function
         return this._display.innerHTML;
@@ -24,33 +25,71 @@ const calculator = {
     get numberButtons(){
         return this._buttons._numbers;
     },
+    get operatorButtons() {
+        return this._buttons._operators;
+    },
+    get memory(){
+        return this._memory
+    },
+    set memory(newMemory){
+        this._memory = newMemory;
+    },
+    get memoryOperation(){
+        return this._memoryOperation
+    },
+    set memoryOperation(newOperator){
+        this._memoryOperation = newOperator
+    }
     numberButtonDisplay(event) {
-        if (event.target === decimal && calculator.display.indexOf('.') !== -1){
-            return;
+        if (event.target === decimal && calculator.display.indexOf('.') !== -1){ // check to see if there is already a decimal point in the dislayed number
+            return;  //dont accept another decimal input
         };
 
-        if (calculator.display === '0' && event.target !== decimal) {
-            calculator._display.innerHTML = event.target.value;
+        if (calculator.display === '0' && event.target !== decimal) { // if inputting a digit when the display reads 0
+        calculator._display.innerHTML = event.target.value;  //replace the initial 0 instead of concatenating to it
         } else {
-            calculator._display.innerHTML += event.target.value;
-            console.log(calculator.display);
+            calculator._display.innerHTML += event.target.value; // else concatenate
+        
         }
     },
-    
-    resetDisplay() {
-        this._display.innerHTML = 0; 
+    operatorFunctions : {
+        '+'(){
+            this.memory = parseFloat(this.display);
+            this.display = 0
+
+        }
+    }
+
+    resetDisplay(event) { //used for clear button
+        calculator._display.innerHTML = '0'
+        console.log('logged'); 
     }
 }
+//
+//
 //make sure the calculator outputs '0' in the beginning
 
 document.onload = calculator.resetDisplay();
-calculator.numberButtons.forEach( button => button.onclick = calculator.numberButtonDisplay)
 
 //fill number buttons array
 let numberList = document.querySelectorAll('.js-number');
 calculator.numberButtons = numberList;
 calculator.numberButtons.forEach( button => button.value = button.innerHTML);
 calculator.numberButtons.forEach( button => button.onclick = calculator.numberButtonDisplay);
+
+//fill operator buttons array
+let operatorList = document.querySelectorAll('.js-operator');
+calculator.operatorButtons = operatorList
+
+
+//-----BUTTON EVENT LISTENERS-----
+
+//add clear button functionality
+clear.onclick = calculator.resetDisplay
+
+//add addition functionalityy
+console.log("424")
+
 
 
 
@@ -62,7 +101,7 @@ calculator.numberButtons.forEach( button => button.onclick = calculator.numberBu
 // Things to do:
 // - get numbers keys to appear in the display. Treat them like strings and concatenate them into the calculator.display property. Decimal is classed as a number.
 // - create a function which tests to ensure that a number cannot begin with >1 zero and decimal point cannot appear twice or more.
-// - 
+// - create memory variable which stores current value of calculations and will be returned upon hitting equals.
 //
 //
 //
