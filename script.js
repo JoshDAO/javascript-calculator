@@ -52,9 +52,11 @@ const calculator = {
         
         }
     },
-    operatorFunctions(event) {
-        calculator;
+    operatorOnPress(event) {
+        calculator._memory = calculator._display.innerHTML;  //will store current displaed number to memory
+        calculator._memoryOperation = event.target.value;    //will store the appropriate operator in operatorMemory, so when equals is hit, we know which operator to use.
     },
+    
 
     resetDisplay(event) { //used for clear button
         calculator._display.innerHTML = '0'
@@ -88,7 +90,7 @@ calculator.operatorButtons[3].value = '/';
 clear.onclick = calculator.resetDisplay
 
 //add addition functionalityy
-console.log("424")
+calculator.operatorButtons.slice(0,4).forEach( operatorButton => operatorButton.onclick = calculator.operatorOnPress); //add event listener to each of 4 operator buttons
 
 
 
