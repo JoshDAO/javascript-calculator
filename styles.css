@@ -9,6 +9,7 @@ main {
 
 #display-container {
     display: flex;
+    flex-direction: column;
     height: 20%;
     background-color: black;
     border-radius: 5px;
@@ -17,12 +18,26 @@ main {
     align-items: center;
 
 }
-#display {
-    text-align: end;
+
+#display-container div{
+   
     width: 100%;
-    margin: 5px;
-    font-size: 50px;
+    text-align: end;
+    margin: 0 5px;
     
+}
+#empty-space{
+    height: 25%;
+}
+#display {
+    font-size: 50px;
+    height: 50%;
+}
+
+#current-result {
+    font-size: 20px;
+    height: 25%;
+
 }
 
 #keys-container{

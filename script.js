@@ -7,7 +7,7 @@ const calculator = {
         _numbers: [ zero, one, two, three, four, five, six, seven, eight, nine, decimal],  
         _operators: [add, subtract, multiply, divide, clear, equals],    
     },
-    _memory: 0,  //this will contain the first operand while the second operand is inputted
+    _memory: null,  //this will contain the first operand while the second operand is inputted
     _memoryOperation: null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
     _startNewDisplay: false, //will ensure display is overwritten after hitting an operator
 
@@ -55,9 +55,11 @@ const calculator = {
         }
     },
     operatorOnPress(event) {
-        calculator._memory = calculator._display.innerHTML;  //will store current displaed number to memory
-        calculator._memoryOperation = event.target.value;    //will store the appropriate operator in operatorMemory, so when equals is hit, we know which operator to use.
-        calculator._startNewDisplay = true;
+        //calculator.calculate()
+        //calculator._memory = calculator._display.innerHTML;  //will store current displaed number to memory
+        //calculator._memoryOperation = event.target.value;    //will store the appropriate operator in operatorMemory, so when equals is hit, we know which operator to use.
+        //calculator._startNewDisplay = true;
+        calculator._display.innerHTML += event.target.value;
     },
     calculate(event) {
         if ( !calculator._memory || !calculator._memoryOperation) {
@@ -88,7 +90,6 @@ const calculator = {
         calculator._display.innerHTML = '0'
         calculator._memory = 0;
         calculator._memoryOperation = null;
-        console.log('logged'); 
     }
 }
 //
@@ -100,8 +101,12 @@ document.onload = calculator.resetDisplay();
 //fill number buttons array
 let numberList = document.querySelectorAll('.js-number');
 calculator.numberButtons = numberList;
-calculator.numberButtons.forEach( button => button.value = button.innerHTML);
-calculator.numberButtons.forEach( button => button.onclick = calculator.numberButtonDisplay);
+calculator.numberButtons.forEach( button => {
+    button.value = parseInt(button.innerHTML) || '.';
+    button.onclick = calculator.numberButtonDisplay;
+});
+
+
 
 //fill operator buttons array
 let operatorList = document.querySelectorAll('.js-operator');
