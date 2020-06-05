@@ -9,6 +9,7 @@ const calculator = {
     },
     _memory: 0,  //this will contain the first operand while the second operand is inputted
     _memoryOperation: null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
+    _startNewDisplay: false, //will ensure display is overwritten after hitting an operator
 
 
     get display() {  // basic getter function
@@ -45,8 +46,9 @@ const calculator = {
             return;  //dont accept another decimal input
         };
 
-        if (calculator.display === '0' && event.target !== decimal) { // if inputting a digit when the display reads 0
-        calculator._display.innerHTML = event.target.value;  //replace the initial 0 instead of concatenating to it
+        if ( (calculator.display === '0' && event.target !== decimal) || calculator._startNewDisplay ) { // if inputting a digit when the display reads 0 OR an operator has just been pressed
+        calculator._display.innerHTML = event.target.value;  //replace current display instead of concatenating to it
+        calculator._startNewDisplay = false;
         } else {
             calculator._display.innerHTML += event.target.value; // else concatenate
         
@@ -55,6 +57,7 @@ const calculator = {
     operatorOnPress(event) {
         calculator._memory = calculator._display.innerHTML;  //will store current displaed number to memory
         calculator._memoryOperation = event.target.value;    //will store the appropriate operator in operatorMemory, so when equals is hit, we know which operator to use.
+        calculator._startNewDisplay = true;
     },
     
 
