@@ -10,7 +10,7 @@ const calculator = {
     _memory: null,  //this will contain the first operand while the second operand is inputted
     _memoryOperation: null, //this will contain either '+','-','*' or '/' and will be checked when equals is hit to determine the correct operation
     _startNewDisplay: false, //will ensure display is overwritten after hitting an operator
-
+    _calculated: null,
 
     get display() {  // basic getter function
         return this._display.innerHTML;
