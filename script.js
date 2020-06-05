@@ -62,6 +62,9 @@ const calculator = {
         
         }
         calculator._calculation += event.target.value;
+        if (calculator.calculateAddition(calculator._calculation)){
+            calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
+        }
     },
     operatorOnPress(event) {
         //calculator.calculate()
