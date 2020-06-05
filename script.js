@@ -9,6 +9,7 @@ const calculator = {
     },
     _calculatedDisplay: document.getElementById('current-result'), // will dynamically show current answer
     _calculation: "",
+    allowDecimal: true,
 
     get display() {  // basic getter function
         return this._display.innerHTML;
@@ -28,23 +29,28 @@ const calculator = {
         return this._buttons._operators;
     },
     numberOnPress(event) {
-        if (event.target === decimal && calculator.display.indexOf('.') !== -1){ // check to see if there is already a decimal point in the dislayed number
+        if (!calculator.allowDecimal && event.target === decimal){ // check to see if there is already a decimal point in the dislayed number
             return;  //dont accept another decimal input
         };
+        if (event.target === decimal) {
+            calculator.allowDecimal = false;
+        }
 
-        if ( (calculator.display === '0' && event.target !== decimal) || calculator._startNewDisplay ) { // if inputting a digit when the display reads 0 OR an operator has just been pressed
-        calculator._display.innerHTML = event.target.value;  //replace current display instead of concatenating to it
-        calculator._startNewDisplay = false;
+        if (calculator.display === '0' && event.target !== decimal) { // if inputting a digit when the display reads 0
+            calculator._display.innerHTML = event.target.value;  //replace current display instead of concatenating to it
+            calculator._startNewDisplay = false;
         } else {
             calculator._display.innerHTML += event.target.value; // else concatenate
         
-        }
+        };
+
         calculator._calculation += event.target.value;
         if (calculator.calculateAddition(calculator._calculation)){
             calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
         }
     },
     operatorOnPress(event) {
+        calculator.allowDecimal = true;
         calculator._display.innerHTML += event.target.value;
         calculator._calculation += event.target.value
     },
@@ -117,6 +123,7 @@ calculator.operatorButtons.slice(0,4).forEach( operatorButton => operatorButton.
 
 
 equals.onclick = calculator.calculate;
+
 
 
 
