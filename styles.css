@@ -16,6 +16,7 @@ main {
     text-align: end;
     color: white;
     align-items: center;
+    padding-left: 7px;
 
 }
 
@@ -29,9 +30,19 @@ main {
 #empty-space{
     height: 25%;
 }
-#display {
-    font-size: 50px;
+#display-box {
     height: 50%;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:right;
+    overflow:hidden;
+    white-space: nowrap;
+    
+}
+#display{
+    font-size: 50px;
+    float:right;
+    margin: 0 5px;
 }
 
 #current-result {
