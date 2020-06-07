@@ -87,6 +87,7 @@ const calculator = {
                 console.log(splitExpression[i].endsWith('/'))
                 splitExpression[i] = '-' + splitExpression[i].toString() + splitExpression[i+1].toString();
                 splitExpression.splice(i+1, 1)
+                i--;
             }
         }
         
@@ -100,12 +101,12 @@ const calculator = {
     calculateMultiplication(expression) {
         const splitExpression = expression.split('*');
         console.log(splitExpression);
-        // splitExpression.forEach( (element, index) => {
-        //     if (element.endsWith('/') || element.endsWith('*')){
-        //         element += splitExpression[index + 1];
-        //         splitExpression[index + 1] /= -1;
-        //     }
-        // });
+        for (let i = 0; i < splitExpression.length; i++) {
+            if (splitExpression[i].startsWith("--")){
+                splitExpression[i] = splitExpression[i].substring(2);
+                i--;
+            }
+        }
 
         const numberExpression = splitExpression.map( element => this.calculateDivision(element));
         const result = numberExpression.reduce( (accumulator, currentValue) => { return accumulator * currentValue}, 1 ); // use 1 as a constant to multiply everything by
