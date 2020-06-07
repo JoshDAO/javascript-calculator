@@ -54,7 +54,7 @@ const calculator = {
         calculator._calculation += event.target.value  //add operator to calculation
     },
     resetDisplay(event) { //used for clear button
-        calculator._display.innerHTML = '0'
+        calculator._display.innerHTML = ''
         calculator._calculatedDisplay.innerHTML = "";
         calculator._calculation = '';
     },
@@ -67,13 +67,6 @@ const calculator = {
             expression = "1*-1* " +expression.substring(1);
         }
         const splitExpression = expression.split('+');
-        splitExpression.forEach( (element, index) => {
-            if (element.endsWith('/') || element.endsWith('*')){
-                console.log(element);
-                //element += splitExpression[index + 1];
-               // splitExpression[index + 1] /= -1;
-            }
-        });
         console.log(splitExpression);
         const numberExpression = splitExpression.map( element => this.calculateSubtraction(element));
        // console.log(numberExpression);
@@ -82,32 +75,30 @@ const calculator = {
     },
     calculateSubtraction(expression) {
         let splitExpression = expression.split('-');
-        for (let i = 0; i < splitExpression.length; i++){ // this is to fix a bug in the calculation where there is a double operator. EG. '5/-4'
-            if (splitExpression[i].endsWith('/') || splitExpression[i].endsWith('*')) {  
-                console.log(splitExpression[i].endsWith('/'))
-                splitExpression[i] = '-' + splitExpression[i].toString() + splitExpression[i+1].toString();
-                splitExpression.splice(i+1, 1)
-                i--;
+        for (let i = 0; i < splitExpression.length; i++){               // this is to fix a bug in the calculation where there is a double operator. EG. '5/-4'
+            if (splitExpression[i].endsWith('/') || splitExpression[i].endsWith('*')) {  // if true, means that we are multiplying/dividing by negative number
+
+                //shove the contents of the next element into this element and add a minus sign at beginning each time. Will handle multiple negative signs later
+                splitExpression[i] = '-' + splitExpression[i].toString() + splitExpression[i+1].toString(); 
+                splitExpression.splice(i+1, 1);                         //remove the element whose contents were shoved into [i]
+                i--;                                                    // iterate over this array again incase of a chain of negative numbers.
             }
         }
-        
-        console.log(splitExpression);
+      
         const numberExpression = splitExpression.map( element =>  this.calculateMultiplication(element));
-       // console.log(numberExpression);
-
         const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator - currentValue}, numberExpression[0] ); // we need to use the first element as initialValue and only subtract subsequent
         return result;
     },
     calculateMultiplication(expression) {
         const splitExpression = expression.split('*');
         console.log(splitExpression);
-        for (let i = 0; i < splitExpression.length; i++) {
+        for (let i = 0; i < splitExpression.length; i++) { // this is to handle the minus signs that accumulated in calculateSubtraction()
             if (splitExpression[i].startsWith("--")){
-                splitExpression[i] = splitExpression[i].substring(2);
-                i--;
+                splitExpression[i] = splitExpression[i].substring(2); //two negatives cancel each other out so remove them.
+                i--;                                                  // iterate over this element again in case of many minus signs.
+
             }
         }
-
         const numberExpression = splitExpression.map( element => this.calculateDivision(element));
         const result = numberExpression.reduce( (accumulator, currentValue) => { return accumulator * currentValue}, 1 ); // use 1 as a constant to multiply everything by
         return result;
