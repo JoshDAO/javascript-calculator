@@ -15,7 +15,7 @@ const calculator = {
         return this._display.innerHTML;
     },
 
-    set display(newOutput) {        // setter function with built in Error capability for numbers too large or small. (may adjust this later)
+    set display(newOutput) {        // setter function
         this._display.innerHTML += newOutput;
     },
     get numberButtons(){
@@ -50,9 +50,8 @@ const calculator = {
         };
 
         calculator._calculation += event.target.value;
-        if (calculator.calculateAddition(calculator._calculation)){
-            calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
-        }
+        calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
+       
     },
     operatorOnPress(event) {
         calculator.allowDecimal = true; // allows decimal point to be used again as start of a new number
@@ -66,7 +65,7 @@ const calculator = {
              }
         }
         calculator.display = event.target.innerHTML; //add operator to display
-        calculator._calculation += event.target.value  //add operator to calculation
+        calculator.calculation = event.target.value  //add operator to calculation
     },
     resetDisplay(event) { //used for clear button
         calculator._display.innerHTML = ''
@@ -76,7 +75,7 @@ const calculator = {
     equalsOnPress(event){
         calculator._display.innerHTML = calculator._calculatedDisplay.innerHTML; // make the calculated number appear big
         calculator._calculatedDisplay.innerHTML = ""; //remove the small display until further calculation
-        calculator._calculation = calculator.display
+        calculator._calculation = calculator.display //replace the calculation with the result of the calculation to prevent issues when operating on this value
         calculator.equalsReset = true;
     },
     calculateAddition(expression) {
