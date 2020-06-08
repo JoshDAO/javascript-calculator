@@ -28,6 +28,9 @@ const calculator = {
     get operatorButtons() {
         return this._buttons._operators;
     },
+    get calculation() {
+        return this._calculation;
+    },
     numberOnPress(event) {
         if (!calculator.allowDecimal && event.target === decimal){ // check to see if there is already a decimal point in the dislayed number
             return;  //dont accept another decimal input
@@ -50,6 +53,14 @@ const calculator = {
     },
     operatorOnPress(event) {
         calculator.allowDecimal = true; // allows decimal point to be used again as start of a new number
+
+        //this test is to make sure invalid consecutive operators cannot be inputted
+         if  (calculator.subsequentOperatorTest()){ //tests to see if current calculation ends with an operator
+             if (!(event.target === subtract && (calculator._calculation.endsWith('*') || calculator._calculation.endsWith('/') ) ) ) {
+                    calculator._display.innerHTML = calculator._display.innerHTML.slice(0, -1) //remove last character so it will be replaced with new operator
+                    calculator._calculation = calculator._calculation.slice(0,-1);             // do same with calculation
+             }
+        }
         calculator._display.innerHTML += event.target.innerHTML; //add operator to display
         calculator._calculation += event.target.value  //add operator to calculation
     },
@@ -111,6 +122,16 @@ const calculator = {
         //console.log(numberExpression);
         const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator / currentValue}, numberExpression[0] );
         return result;
+    },
+    subsequentOperatorTest(){
+        if (this.calculation.endsWith('-') || 
+        this.calculation.endsWith('+') ||
+        this.calculation.endsWith('*') ||
+        this.calculation.endsWith('/') ) {
+            return true
+        } else {
+            return false;            
+        }
     }
 }
 //
