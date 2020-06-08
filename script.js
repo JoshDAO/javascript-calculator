@@ -16,11 +16,7 @@ const calculator = {
     },
 
     set display(newOutput) {        // setter function with built in Error capability for numbers too large or small. (may adjust this later)
-        if (newOutput < 1e16 && newOutput > -1e16){
-            this._display.innerHTML = newOutput;
-        } else {
-            this._display.innerHTML = 'Error';
-        }
+        this._display.innerHTML += newOutput;
     },
     get numberButtons(){
         return this._buttons._numbers;
@@ -31,8 +27,11 @@ const calculator = {
     get calculation() {
         return this._calculation;
     },
+    set calculation(value) {
+        this._calculation += value;
+    },
     numberOnPress(event) {
-        if (calculator.equalsReset) {  // we are NOT operating on the asnwer displayed in this case
+        if (calculator.equalsReset) {  // we are NOT operating on the answer displayed in this case
             calculator.resetDisplay();  // so reset before input
             calculator.equalsReset = false; // reset variable
         }
@@ -46,7 +45,7 @@ const calculator = {
         if (calculator.display === '0' && event.target !== decimal) { // if inputting a digit when the display reads 0
             calculator._display.innerHTML = event.target.value;  //replace current display instead of concatenating to it
         } else {
-            calculator._display.innerHTML += event.target.value; // else concatenate
+            calculator.display = event.target.value; // else concatenate
         
         };
 
@@ -66,7 +65,7 @@ const calculator = {
                     calculator._calculation = calculator._calculation.slice(0,-1);             // do same with calculation
              }
         }
-        calculator._display.innerHTML += event.target.innerHTML; //add operator to display
+        calculator.display = event.target.innerHTML; //add operator to display
         calculator._calculation += event.target.value  //add operator to calculation
     },
     resetDisplay(event) { //used for clear button
@@ -77,6 +76,7 @@ const calculator = {
     equalsOnPress(event){
         calculator._display.innerHTML = calculator._calculatedDisplay.innerHTML; // make the calculated number appear big
         calculator._calculatedDisplay.innerHTML = ""; //remove the small display until further calculation
+        calculator._calculation = calculator.display
         calculator.equalsReset = true;
     },
     calculateAddition(expression) {
@@ -84,7 +84,6 @@ const calculator = {
             expression = "1*-1* " +expression.substring(1);
         }
         const splitExpression = expression.split('+');
-        console.log(splitExpression);
         const numberExpression = splitExpression.map( element => this.calculateSubtraction(element));
         const result = numberExpression.reduce( (accumulator, currentValue) => {return accumulator + currentValue}, 0);
         return result;
@@ -107,24 +106,20 @@ const calculator = {
     },
     calculateMultiplication(expression) {
         const splitExpression = expression.split('*');
-        console.log(splitExpression);
         for (let i = 0; i < splitExpression.length; i++) { // this is to handle the minus signs that accumulated in calculateSubtraction()
             if (splitExpression[i].startsWith("--")){
                 splitExpression[i] = splitExpression[i].substring(2); //two negatives cancel each other out so remove them.
                 i--;                                                  // iterate over this element again in case of many minus signs.
-
             }
         }
+
         const numberExpression = splitExpression.map( element => this.calculateDivision(element));
         const result = numberExpression.reduce( (accumulator, currentValue) => { return accumulator * currentValue}, 1 ); // use 1 as a constant to multiply everything by
         return result;
     },
     calculateDivision(expression) {
         const splitExpression = expression.split('/');
-        console.log(splitExpression);
-
         const numberExpression = splitExpression.map( element => parseFloat(element));
-        //console.log(numberExpression);
         const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator / currentValue}, numberExpression[0] );
         return result;
     },
