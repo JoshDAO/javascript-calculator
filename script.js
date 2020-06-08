@@ -10,7 +10,7 @@ const calculator = {
     _calculatedDisplay: document.getElementById('current-result'), // will dynamically show current answer
     _calculation: "", //this will have a similar value to the current display, but using the language recognised operators instead of the symbols on the operator keys. This will be what will be evaluated.
     allowDecimal: true, // validation to ensure no more than one decimal dot per number
-
+    equalsReset: false, // this variable will determine if the user is starting a new calculation after hitting equals or continuing to operate on the answer.
     get display() {  // basic getter function
         return this._display.innerHTML;
     },
@@ -32,6 +32,10 @@ const calculator = {
         return this._calculation;
     },
     numberOnPress(event) {
+        if (calculator.equalsReset) {  // we are NOT operating on the asnwer displayed in this case
+            calculator.resetDisplay();  // so reset before input
+            calculator.equalsReset = false; // reset variable
+        }
         if (!calculator.allowDecimal && event.target === decimal){ // check to see if there is already a decimal point in the dislayed number
             return;  //dont accept another decimal input
         };
@@ -53,6 +57,7 @@ const calculator = {
     },
     operatorOnPress(event) {
         calculator.allowDecimal = true; // allows decimal point to be used again as start of a new number
+        calculator.equalsReset = false; 
 
         //this test is to make sure invalid consecutive operators cannot be inputted
          if  (calculator.subsequentOperatorTest()){ //tests to see if current calculation ends with an operator
@@ -72,6 +77,7 @@ const calculator = {
     equalsOnPress(event){
         calculator._display.innerHTML = calculator._calculatedDisplay.innerHTML; // make the calculated number appear big
         calculator._calculatedDisplay.innerHTML = ""; //remove the small display until further calculation
+        calculator.equalsReset = true;
     },
     calculateAddition(expression) {
         if (expression.startsWith('-')) {
@@ -80,7 +86,6 @@ const calculator = {
         const splitExpression = expression.split('+');
         console.log(splitExpression);
         const numberExpression = splitExpression.map( element => this.calculateSubtraction(element));
-       // console.log(numberExpression);
         const result = numberExpression.reduce( (accumulator, currentValue) => {return accumulator + currentValue}, 0);
         return result;
     },
@@ -134,8 +139,10 @@ const calculator = {
         }
     }
 }
-//
-//
+
+
+
+
 //make sure the calculator outputs '0' in the beginning
 
 document.onload = calculator.resetDisplay();
