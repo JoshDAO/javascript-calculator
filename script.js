@@ -5,7 +5,7 @@ const calculator = {
     _display: document.getElementById('display'),  //this will be the property that will be updated as buttons are pushed
     _buttons: {
         _numbers: [],  // these will be linked with elements later
-        _operators: [add, subtract, multiply, divide, clear, equals],                      // as will these
+        _operators: [],                      // as will these
     },
     _calculatedDisplay: document.getElementById('current-result'), // will dynamically show current answer
     _calculation: "", //this will have a similar value to the current display, but using the language recognised operators instead of the symbols on the operator keys. This will be what will be evaluated.
@@ -26,6 +26,9 @@ const calculator = {
     },
     get operatorButtons() {
         return this._buttons._operators;
+    },
+    set operatorButtons(newButtons){
+        this._buttons._operators = newButtons
     },
     get calculation() {
         return this._calculation;
@@ -164,13 +167,12 @@ document.onload = calculator.resetDisplay();
 // ---- LINK ELEMENTS AND ASSIGN APPROPRIATE PROPERTIES ----
 
 //fill number buttons array
-calculator.numberButtons = document.querySelectorAll('.js-number');
+calculator.numberButtons = [...document.querySelectorAll('.js-number')];
 
 
 
 //fill operator buttons array
-let operatorList = document.querySelectorAll('.js-operator');
-calculator.operatorButtons = operatorList
+calculator.operatorButtons = [...document.querySelectorAll('.js-operator')];
 calculator.operatorButtons[0].value = '+';  //add values to be stored in memoryOperation
 calculator.operatorButtons[1].value = '-';
 calculator.operatorButtons[2].value = '*';
