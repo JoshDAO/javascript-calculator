@@ -1,3 +1,8 @@
+body{
+    margin: auto;
+    display: flex;
+}
+
 main {
     width: 500px;
     background-color: gray;
@@ -51,11 +56,24 @@ main {
     float:right;
     margin: 0 5px;
 }
+@media only screen and (max-width: 500px) {
+    #display{
+        font-size: 40px;
+    }
+}
 
-#current-result {
-    font-size: 20px;
+#current-result-box {
     height: 25%;
+}
 
+#current-result{
+    font-size: 20px;
+    margin: 0 5px;  
+}
+@media only screen and (max-width: 500px) {
+    #current-result{
+        font-size: 15px;
+    }
 }
 
 #keys-container{
