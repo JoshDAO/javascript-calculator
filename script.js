@@ -4,7 +4,7 @@
 const calculator = {
     _display: document.getElementById('display'),  //this will be the property that will be updated as buttons are pushed
     _buttons: {
-        _numbers: [ zero, one, two, three, four, five, six, seven, eight, nine, decimal],  // these will be linked with elements later
+        _numbers: [],  // these will be linked with elements later
         _operators: [add, subtract, multiply, divide, clear, equals],                      // as will these
     },
     _calculatedDisplay: document.getElementById('current-result'), // will dynamically show current answer
@@ -20,6 +20,9 @@ const calculator = {
     },
     get numberButtons(){
         return this._buttons._numbers;
+    },
+    set numberButtons(newButtons) {
+        this._buttons._numbers = newButtons;
     },
     get operatorButtons() {
         return this._buttons._operators;
@@ -161,8 +164,7 @@ document.onload = calculator.resetDisplay();
 // ---- LINK ELEMENTS AND ASSIGN APPROPRIATE PROPERTIES ----
 
 //fill number buttons array
-let numberList = document.querySelectorAll('.js-number');
-calculator.numberButtons = numberList;
+calculator.numberButtons = document.querySelectorAll('.js-number');
 
 
 
