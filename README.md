@@ -1,2 +1,4 @@
 # javascript-calculator
-I will be making a functioning calculator and styling it using HTML, CSS and vanilla JavaScript. It will be able to add, subtract, multiply and divide.
+
+This is a calculator created ubsing vanilla Javascript. It can evaluate expressions containing addition, subtraction, multiplication and division.
+The calculator will evaluate the expressions with the BIDMAS rule set in mind.
