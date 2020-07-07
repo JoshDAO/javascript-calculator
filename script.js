@@ -66,8 +66,13 @@ const calculator = {
         //this test is to make sure invalid consecutive operators cannot be inputted
          if  (calculator.subsequentOperatorTest()){ //tests to see if current calculation ends with an operator
              if (!(event.target === subtract && (calculator._calculation.endsWith('*') || calculator._calculation.endsWith('/') ) ) ) {
-                    calculator._display.innerHTML = calculator._display.innerHTML.slice(0, -1) //remove last character so it will be replaced with new operator
-                    calculator._calculation = calculator._calculation.slice(0,-1);             // do same with calculation
+                 while (calculator._calculation.endsWith('*') || 
+                        calculator._calculation.endsWith('/') ||
+                        calculator._calculation.endsWith('+') || 
+                        calculator._calculation.endsWith('-')) {
+                            calculator._display.innerHTML = calculator._display.innerHTML.slice(0, -1) //remove last character so it will be replaced with new operator
+                            calculator._calculation = calculator._calculation.slice(0,-1); // do same with calculation
+                        }            
              }
         }
         calculator.display = event.target.innerHTML; //add operator to display
