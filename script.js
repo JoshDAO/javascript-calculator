@@ -60,7 +60,7 @@ const calculator = {
         };
 
         calculator._calculation += event.target.value;
-        calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
+        calculator._calculatedDisplay.innerHTML = calculator.calculateBrackets(calculator._calculation);
        
     },
     operatorOnPress(event) {
@@ -94,6 +94,9 @@ const calculator = {
         };
         calculator.display = event.target.innerHTML; //add operator to display
         calculator.calculation = event.target.value  //add operator to calculation
+        if (event.target == closebracket) {
+            calculator._calculatedDisplay.innerHTML = calculator.calculateBrackets(calculator._calculation);
+        }
     },
     resetDisplay(event) { //used for clear button
         calculator._display.innerHTML = ''
@@ -116,11 +119,28 @@ const calculator = {
 
 
     calculateAddition(expression) {
+        expression = expression.replace(/--/g, "+");  // these deal with combinations of consecutive operators that arise from dealing with paretheses
+        expression = expression.replace(/\+\+/g, "+");
+        expression = expression.replace(/\+-/g, "-");
+        if (expression.startsWith('+')){ // remove a redundant + sign from start of expression
+          expression = expression.slice(1)
+        };
         if (expression.startsWith('-')) { //this if statement deals with first number being a negative
             expression = "1*-1* " +expression.substring(1); // refactor equation so negative symbol is not at start and the split method below will work as intended.
-        }
+        };
+        console.log("addition: " + expression);
         const splitExpression = expression.split('+'); //split equation at every instance of plus sign
 
+        for (let i = 0; i < splitExpression.length; i++){               // this is to fix a bug in the calculation where there is a double operator. EG. '5/+4'
+            if (splitExpression[i].endsWith('/') || splitExpression[i].endsWith('*') ||
+                splitExpression[i].endsWith('+') || splitExpression[i].endsWith('-')) {  
+
+                //concatenate the next element onto the end of this element to create a new valid expression
+                splitExpression[i] = splitExpression[i].toString() + splitExpression[i+1].toString(); 
+                splitExpression.splice(i+1, 1);                         //remove the element whose contents were shoved into [i]
+                i--;                                                    // iterate over this array again incase of a chain of negative numbers.
+            }
+        };
         for (let i = 0; i < splitExpression.length; i++) {  // This if statement is to fix a bug when dealing with exponential notation
             if (splitExpression[i].endsWith('E')) {  // a number '1E+30' was being split into ['1E', '30']
                 splitExpression[i] = splitExpression[i] + splitExpression[i+1]; //so this line pushes those two elements back into the same element, restoring the number
@@ -130,6 +150,7 @@ const calculator = {
         }
         const numberExpression = splitExpression.map( element => this.calculateSubtraction(element)); //numberExpression represents the array filled with all of the returned and evaluated sub-equations
         const result = numberExpression.reduce( (accumulator, currentValue) => {return accumulator + currentValue}, 0); //this method is calculating ADDITION, so reduce array to find the sum of its parts.
+        console.log("Total: " + result)
         return result;
     },
     calculateSubtraction(expression) {
@@ -166,6 +187,27 @@ const calculator = {
         const numberExpression = splitExpression.map( element => parseFloat(element));
         const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator / currentValue}, numberExpression[0] ); // again, use first element as initial value.
         return result;
+    },
+    calculateBrackets(expression) {
+        //this section is to handle multiplication bracket notation. Example "5(10)" should equal 50
+        let sliceIndex = expression.search(/[0-9]\(/) //find instances of digit followed by open bracket
+        if (sliceIndex > -1) {
+            expression = expression.slice(0, sliceIndex+1) + "*" + expression.slice(sliceIndex + 1); // add a "*" between them so function picks it up
+            this.calculateAddition(expression); //restart function to check for multiple instances
+        };
+
+        let openBracket = expression.lastIndexOf("("); //this will target innermost parentheses and solve it, removing 1 layer from the equation
+        let closeBracket = expression.indexOf(")", openBracket);
+        if (openBracket !== -1 && closeBracket !== -1) { // in this case, there are brackets that need sorting
+          let expressionSlice = expression.slice(openBracket+1, closeBracket);  //slice that contains the expression 
+
+          let arrayExpression = [...expression]  //convert to array for splice purposes
+          arrayExpression.splice(openBracket, closeBracket - openBracket + 1, this.calculateAddition(expressionSlice)); // replace expression including brackets with the result
+          expression = arrayExpression.join("") // convert back to string
+          this.calculateBrackets(expression);      //repeat to check for more parentheses
+        };
+
+        return this.calculateAddition(expression); //once all brackets have been removed, return the result
     },
     subsequentOperatorTest(){ 
         if (this.calculation.endsWith('-') || 
