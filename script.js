@@ -69,12 +69,16 @@ const calculator = {
 
         calculator._calculation += event.target.value;
         calculator._calculatedDisplay.innerHTML = calculator.calculateBrackets(calculator._calculation);
+        if (calculator.numOfBrackets !== 0) {
+            calculator._calculatedDisplay.innerHTML = "";
+        }
        
     },
     operatorOnPress(event) {
         if (event.target == calculator.operatorButtons[5] && calculator.numOfBrackets === 0) {
             return
         };
+        calculator._calculatedDisplay.innerHTML = "";
 
         calculator.allowDecimal = true; // allows decimal point to be used again as start of a new number
         calculator.equalsReset = false; 
