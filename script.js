@@ -68,7 +68,8 @@ const calculator = {
         };
 
         calculator._calculation += event.target.value;
-        calculator._calculatedDisplay.innerHTML = calculator.calculateBrackets(calculator._calculation);
+        calculator.calculateBrackets();
+            calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);    
         if (calculator.numOfBrackets !== 0) {
             calculator._calculatedDisplay.innerHTML = "";
         }
@@ -107,7 +108,8 @@ const calculator = {
         calculator.display = event.target.innerHTML; //add operator to display
         calculator.calculation = event.target.value  //add operator to calculation
         if (event.target == closebracket) {
-            calculator._calculatedDisplay.innerHTML = calculator.calculateBrackets(calculator._calculation);
+            calculator.calculateBrackets();
+            calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
         }
     },
     resetDisplay(event) { //used for clear button
@@ -200,26 +202,24 @@ const calculator = {
         const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator / currentValue}, numberExpression[0] ); // again, use first element as initial value.
         return result;
     },
-    calculateBrackets(expression) {
+    calculateBrackets() {
         //this section is to handle multiplication bracket notation. Example "5(10)" should equal 50
-        let sliceIndex = expression.search(/[0-9]\(/) //find instances of digit followed by open bracket
+        let sliceIndex = this._calculation.search(/[0-9]\(/) //find instances of digit followed by open bracket
         if (sliceIndex > -1) {
-            expression = expression.slice(0, sliceIndex+1) + "*" + expression.slice(sliceIndex + 1); // add a "*" between them so function picks it up
-            this.calculateAddition(expression); //restart function to check for multiple instances
+            this._calculation = this._calculation.slice(0, sliceIndex+1) + "*" + this._calculation.slice(sliceIndex + 1); // add a "*" between them so function picks it up
+            this.calculateBrackets(); //restart function to check for multiple instances
         };
 
-        let openBracket = expression.lastIndexOf("("); //this will target innermost parentheses and solve it, removing 1 layer from the equation
-        let closeBracket = expression.indexOf(")", openBracket);
+        let openBracket = this._calculation.lastIndexOf("("); //this will target innermost parentheses and solve it, removing 1 layer from the equation
+        let closeBracket = this._calculation.indexOf(")", openBracket);
         if (openBracket !== -1 && closeBracket !== -1) { // in this case, there are brackets that need sorting
-          let expressionSlice = expression.slice(openBracket+1, closeBracket);  //slice that contains the expression 
+          let expressionSlice = this._calculation.slice(openBracket+1, closeBracket);  //slice that contains the expression 
 
-          let arrayExpression = [...expression]  //convert to array for splice purposes
+          let arrayExpression = [...this._calculation]  //convert to array for splice purposes
           arrayExpression.splice(openBracket, closeBracket - openBracket + 1, this.calculateAddition(expressionSlice)); // replace expression including brackets with the result
-          expression = arrayExpression.join("") // convert back to string
-          this.calculateBrackets(expression);      //repeat to check for more parentheses
+          this._calculation = arrayExpression.join("") // convert back to string
+          this.calculateBrackets();      //repeat to check for more parentheses
         };
-
-        return this.calculateAddition(expression); //once all brackets have been removed, return the result
     },
     subsequentOperatorTest(){ 
         if (this.calculation.endsWith('-') || 
