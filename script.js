@@ -69,7 +69,10 @@ const calculator = {
 
         calculator._calculation += event.target.value;
         calculator.calculateBrackets();
-            calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);    
+        calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
+        if (isNaN(calculator._calculatedDisplay.innerHTML)){
+            calculator._calculatedDisplay.innerHTML = ""
+        } ;  
         if (calculator.numOfBrackets !== 0) {
             calculator._calculatedDisplay.innerHTML = "";
         }
@@ -96,7 +99,7 @@ const calculator = {
                         }            
              }
         };
-        if (calculator.display.endsWith("(") && event.target !== subtract){  // allow only negation after open bracket
+        if (calculator.display.endsWith("(") && event.target.value !== "(" && event.target.value !== "-") {  // allow only negation or more open bracket after open bracket
             return
         };
         if (event.target == openbracket){
@@ -110,6 +113,9 @@ const calculator = {
         if (event.target == closebracket) {
             calculator.calculateBrackets();
             calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
+            if (isNaN(calculator._calculatedDisplay.innerHTML)){
+                calculator._calculatedDisplay.innerHTML = ""
+            }
         }
     },
     resetDisplay(event) { //used for clear button
