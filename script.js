@@ -11,6 +11,7 @@ const calculator = {
     _calculation: "", //this will have a similar value to the current display, but using the language recognised operators instead of the symbols on the operator keys. This will be what will be evaluated.
     allowDecimal: true, // validation to ensure no more than one decimal dot per number
     equalsReset: false, // this variable will determine if the user is starting a new calculation after hitting equals or continuing to operate on the answer.
+    numOfBrackets: 0,
     get display() {  // basic getter function
         return this._display.innerHTML;
     },
@@ -37,16 +38,19 @@ const calculator = {
         this._calculation += value;
     },
     numberOnPress(event) {
+        if (calculator.display.endsWith(")")){
+            return
+        };
         if (calculator.equalsReset) {  // we are NOT operating on the answer displayed in this case
             calculator.resetDisplay();  // so reset before input
             calculator.equalsReset = false; // reset variable
-        }
+        };
         if (!calculator.allowDecimal && event.target === decimal){ // check to see if there is already a decimal point in the dislayed number
             return;  //dont accept another decimal input
         };
         if (event.target === decimal) {   // turns variable false after decimal point is used.
             calculator.allowDecimal = false;
-        }
+        };
 
         if (calculator.display === '0' && event.target !== decimal) { // if inputting a digit when the display reads 0
             calculator._display.innerHTML = event.target.value;  //replace current display instead of concatenating to it
@@ -60,11 +64,15 @@ const calculator = {
        
     },
     operatorOnPress(event) {
+        if (event.target == calculator.operatorButtons[5] && calculator.numOfBrackets === 0) {
+            return
+        };
+
         calculator.allowDecimal = true; // allows decimal point to be used again as start of a new number
         calculator.equalsReset = false; 
-
+        
         //this test is to make sure invalid consecutive operators cannot be inputted
-         if  (calculator.subsequentOperatorTest()){ //tests to see if current calculation ends with an operator
+         if  (calculator.subsequentOperatorTest() && event.target !== openbracket && event.target !== closebracket){ //tests to see if current calculation ends with an operator
              if (!(event.target === subtract && (calculator._calculation.endsWith('*') || calculator._calculation.endsWith('/') ) ) ) {
                  while (calculator._calculation.endsWith('*') || 
                         calculator._calculation.endsWith('/') ||
@@ -74,7 +82,16 @@ const calculator = {
                             calculator._calculation = calculator._calculation.slice(0,-1); // do same with calculation
                         }            
              }
-        }
+        };
+        if (calculator.display.endsWith("(") && event.target !== subtract){  // allow only negation after open bracket
+            return
+        };
+        if (event.target == openbracket){
+            calculator.numOfBrackets++
+        };
+        if (event.target == closebracket){
+            calculator.numOfBrackets--
+        };
         calculator.display = event.target.innerHTML; //add operator to display
         calculator.calculation = event.target.value  //add operator to calculation
     },
@@ -182,6 +199,8 @@ calculator.operatorButtons[0].value = '+';  //add values to be stored in memoryO
 calculator.operatorButtons[1].value = '-';
 calculator.operatorButtons[2].value = '*';
 calculator.operatorButtons[3].value = '/';
+calculator.operatorButtons[4].value = '(';
+calculator.operatorButtons[5].value = ')';
 
 
 //-----BUTTON EVENT LISTENERS-----
@@ -196,7 +215,7 @@ calculator.operatorButtons[3].value = '/';
 clear.onclick = calculator.resetDisplay
 
 //add general operator button functionality
-calculator.operatorButtons.slice(0,4).forEach( operatorButton => operatorButton.onclick = calculator.operatorOnPress); //add event listener to each of 4 operator buttons
+calculator.operatorButtons.slice(0,6).forEach( operatorButton => operatorButton.onclick = calculator.operatorOnPress); //add event listener to each of 4 operator buttons
 
 //add equals functonality
 equals.onclick = calculator.equalsOnPress;
