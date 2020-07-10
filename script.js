@@ -52,8 +52,16 @@ const calculator = {
             calculator.allowDecimal = false;
         };
 
-        if (calculator.display === '0' && event.target !== decimal) { // if inputting a digit when the display reads 0
-            calculator._display.innerHTML = event.target.value;  //replace current display instead of concatenating to it
+        if ((((calculator.calculation[calculator.calculation.length -2] === "*" || // validaton to ensure numbers dont start with unecessary zeros
+             calculator.calculation[calculator.calculation.length -2] === "/" ||
+             calculator.calculation[calculator.calculation.length -2] === "+" ||
+             calculator.calculation[calculator.calculation.length -2] === "-" ||
+             calculator.calculation[calculator.calculation.length -2] === "(") && calculator.calculation[calculator.calculation.length -1] === "0") ||
+             calculator.display === '0' )  && event.target !== decimal) { // if inputting a digit when the display reads 0 or the most recent number is 0
+             calculator._display.innerHTML = calculator.display.substring(0, calculator.display.length -1) + event.target.value;
+             calculator._calculation = calculator.calculation.substring(0, calculator.calculation.length -1)
+
+               //replace current display instead of concatenating to it
         } else {
             calculator.display = event.target.value; // else concatenate
         
