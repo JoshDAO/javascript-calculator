@@ -17,6 +17,9 @@ const calculator = {
     },
 
     set display(newOutput) {        // setter function
+        this._display.innerHTML = newOutput;
+    },
+    set concatDisplay(newOutput) {
         this._display.innerHTML += newOutput;
     },
     get numberButtons(){
@@ -40,8 +43,14 @@ const calculator = {
     get calculation() {
         return this._calculation;
     },
-    set calculation(value) {
+    set concatCalculation(value){
         this._calculation += value;
+    },
+    set calculation(value) {
+        this._calculation = value;
+    },
+    get penultimateChar(){
+        return this._calculation[this._calculation.length -2]
     },
     numberOnPress(event) {
         if (calculator.display.endsWith(")")){
@@ -58,24 +67,20 @@ const calculator = {
             calculator.allowDecimal = false;
         };
 
-        if ((((calculator.calculation[calculator.calculation.length -2] === "*" || // validaton to ensure numbers dont start with unecessary zeros
-             calculator.calculation[calculator.calculation.length -2] === "/" ||
-             calculator.calculation[calculator.calculation.length -2] === "+" ||
-             calculator.calculation[calculator.calculation.length -2] === "-" ||
-             calculator.calculation[calculator.calculation.length -2] === "(") && calculator.calculation[calculator.calculation.length -1] === "0") ||
+        if ((((calculator.penultimateCharIsOperator()) && calculator.calculation.endsWith('0')) || //
              calculator.display === '0' )  && event.target !== decimal) { // if inputting a digit when the display reads 0 or the most recent number is 0
-             calculator._display.innerHTML = calculator.display.substring(0, calculator.display.length -1) + event.target.value;
-             calculator._calculation = calculator.calculation.substring(0, calculator.calculation.length -1)
+             calculator.display = calculator.display.substring(0, calculator.display.length -1) + event.target.value;
+             calculator.calculation = calculator.calculation.substring(0, calculator.calculation.length -1)
 
                //replace current display instead of concatenating to it
         } else {
-            calculator.display = event.target.value; // else concatenate
+            calculator.concatDisplay = event.target.value; // else concatenate
         
         };
 
-        calculator._calculation += event.target.value;
+        calculator.concatCalculation = event.target.value;
         calculator.calculateBrackets();
-        calculator.calculatedDisplay = calculator.calculateAddition(calculator._calculation);
+        calculator.calculatedDisplay = calculator.calculateAddition(calculator.calculation);
         if (isNaN(calculator.calculatedDisplay)){
             calculator.calculatedDisplay = ""
         } ;  
@@ -94,14 +99,11 @@ const calculator = {
         calculator.equalsReset = false; 
         
         //this test is to make sure invalid consecutive operators cannot be inputted
-         if  (calculator.subsequentOperatorTest() && event.target !== openbracket && event.target !== closebracket){ //tests to see if current calculation ends with an operator
-             if (!(event.target === subtract && (calculator._calculation.endsWith('*') || calculator._calculation.endsWith('/') ) ) ) {
-                 while (calculator._calculation.endsWith('*') || 
-                        calculator._calculation.endsWith('/') ||
-                        calculator._calculation.endsWith('+') || 
-                        calculator._calculation.endsWith('-')) {
-                            calculator._display.innerHTML = calculator._display.innerHTML.slice(0, -1) //remove last character so it will be replaced with new operator
-                            calculator._calculation = calculator._calculation.slice(0,-1); // do same with calculation
+         if  (calculator.endsWithOperator() && event.target !== openbracket && event.target !== closebracket){ //tests to see if current calculation ends with an operator
+             if (!(event.target === subtract && (calculator.calculation.endsWith('*') || calculator.calculation.endsWith('/') ) ) ) {
+                 while (calculator.endsWithOperator()) {
+                            calculator.display = calculator.display.slice(0, -1) //remove last character so it will be replaced with new operator
+                            calculator.calculation = calculator.calculation.slice(0,-1); // do same with calculation
                         }            
              }
         };
@@ -114,25 +116,25 @@ const calculator = {
         if (event.target == closebracket){
             calculator.numOfBrackets--
         };
-        calculator.display = event.target.innerHTML; //add operator to display
-        calculator.calculation = event.target.value  //add operator to calculation
+        calculator.concatDisplay = event.target.innerHTML; //add operator to display
+        calculator.concatCalculation = event.target.value  //add operator to calculation
         if (event.target == closebracket) {
             calculator.calculateBrackets();
-            calculator.calculatedDisplay = calculator.calculateAddition(calculator._calculation);
+            calculator.calculatedDisplay = calculator.calculateAddition(calculator.calculation);
             if (isNaN(calculator.calculatedDisplay)){
                 calculator.calculatedDisplay = ""
             }
         }
     },
     resetDisplay(event) { //used for clear button
-        calculator._display.innerHTML = ''
+        calculator.display = ''
         calculator.calculatedDisplay = "";
-        calculator._calculation = '';
+        calculator.calculation = '';
     },
     equalsOnPress(event){
-        calculator._display.innerHTML = calculator.calculatedDisplay; // make the calculated number appear big
+        calculator.display = calculator.calculatedDisplay; // make the calculated number appear big
         calculator.calculatedDisplay = ""; //remove the small display until further calculation
-        calculator._calculation = calculator.display //replace the calculation with the result of the calculation to prevent issues when operating on this value
+        calculator.calculation = calculator.display //replace the calculation with the result of the calculation to prevent issues when operating on this value
         calculator.equalsReset = true;
     },
 
@@ -147,20 +149,20 @@ const calculator = {
     
     calculateBrackets() {
         //this section is to handle multiplication bracket notation. Example "5(10)" should equal 50
-        let sliceIndex = this._calculation.search(/[0-9]\(/) //find instances of digit followed by open bracket
+        let sliceIndex = this.calculation.search(/[0-9]\(/) //find instances of digit followed by open bracket
         if (sliceIndex > -1) {
-            this._calculation = this._calculation.slice(0, sliceIndex+1) + "*" + this._calculation.slice(sliceIndex + 1); // add a "*" between them so function picks it up
+            this.calculation = this.calculation.slice(0, sliceIndex+1) + "*" + this.calculation.slice(sliceIndex + 1); // add a "*" between them so function picks it up
             this.calculateBrackets(); //restart function to check for multiple instances
         };
 
-        let openBracket = this._calculation.lastIndexOf("("); //this will target innermost parentheses and solve the expression within, removing 1 layer from the equation
-        let closeBracket = this._calculation.indexOf(")", openBracket);
+        let openBracket = this.calculation.lastIndexOf("("); //this will target innermost parentheses and solve the expression within, removing 1 layer from the equation
+        let closeBracket = this.calculation.indexOf(")", openBracket);
         if (openBracket !== -1 && closeBracket !== -1) { // in this case, there are brackets that need sorting
-          let expressionSlice = this._calculation.slice(openBracket+1, closeBracket);  //slice that contains the expression 
+          let expressionSlice = this.calculation.slice(openBracket+1, closeBracket);  //slice that contains the expression 
 
-          let arrayExpression = [...this._calculation]  //convert to array for splice purposes
+          let arrayExpression = [...this.calculation]  //convert to array for splice purposes
           arrayExpression.splice(openBracket, closeBracket - openBracket + 1, this.calculateAddition(expressionSlice)); // replace expression including brackets with the result
-          this._calculation = arrayExpression.join("") // convert back to string
+          this.calculation = arrayExpression.join("") // convert back to string
           this.calculateBrackets();      //repeat to check for more parentheses
         }
     },
@@ -236,7 +238,7 @@ const calculator = {
         const result = numberExpression.slice(1).reduce( (accumulator, currentValue) => { return accumulator / currentValue}, numberExpression[0] ); // again, use first element as initial value.
         return result;
     },
-    subsequentOperatorTest(){ 
+    endsWithOperator(){ 
         if (this.calculation.endsWith('-') || 
         this.calculation.endsWith('+') ||
         this.calculation.endsWith('*') ||
@@ -244,6 +246,17 @@ const calculator = {
             return true
         } else {
             return false;            
+        }
+    },
+    penultimateCharIsOperator(){
+        if (calculator.penultimateChar === "*" || // validaton to ensure numbers dont start with unecessary zeros
+        calculator.penultimateChar === "/" ||
+        calculator.penultimateChar === "+" ||
+        calculator.penultimateChar === "-" ||
+        calculator.penultimateChar === "(") {
+            return true;
+        } else {
+            return false;
         }
     }
 }
