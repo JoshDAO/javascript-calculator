@@ -22,6 +22,12 @@ const calculator = {
     get numberButtons(){
         return this._buttons._numbers;
     },
+    get calculatedDisplay(){
+        return this._calculatedDisplay.innerHTML;
+    },
+    set calculatedDisplay(newOutput){
+        this._calculatedDisplay.innerHTML = newOutput;
+    },
     set numberButtons(newButtons) {
         this._buttons._numbers = newButtons;
     },
@@ -69,12 +75,12 @@ const calculator = {
 
         calculator._calculation += event.target.value;
         calculator.calculateBrackets();
-        calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
-        if (isNaN(calculator._calculatedDisplay.innerHTML)){
-            calculator._calculatedDisplay.innerHTML = ""
+        calculator.calculatedDisplay = calculator.calculateAddition(calculator._calculation);
+        if (isNaN(calculator.calculatedDisplay)){
+            calculator.calculatedDisplay = ""
         } ;  
         if (calculator.numOfBrackets !== 0) {
-            calculator._calculatedDisplay.innerHTML = "";
+            calculator.calculatedDisplay = "";
         }
        
     },
@@ -82,7 +88,7 @@ const calculator = {
         if (event.target == calculator.operatorButtons[5] && calculator.numOfBrackets === 0) {
             return
         };
-        calculator._calculatedDisplay.innerHTML = "";
+        calculator.calculatedDisplay = "";
 
         calculator.allowDecimal = true; // allows decimal point to be used again as start of a new number
         calculator.equalsReset = false; 
@@ -112,20 +118,20 @@ const calculator = {
         calculator.calculation = event.target.value  //add operator to calculation
         if (event.target == closebracket) {
             calculator.calculateBrackets();
-            calculator._calculatedDisplay.innerHTML = calculator.calculateAddition(calculator._calculation);
-            if (isNaN(calculator._calculatedDisplay.innerHTML)){
-                calculator._calculatedDisplay.innerHTML = ""
+            calculator.calculatedDisplay = calculator.calculateAddition(calculator._calculation);
+            if (isNaN(calculator.calculatedDisplay)){
+                calculator.calculatedDisplay = ""
             }
         }
     },
     resetDisplay(event) { //used for clear button
         calculator._display.innerHTML = ''
-        calculator._calculatedDisplay.innerHTML = "";
+        calculator.calculatedDisplay = "";
         calculator._calculation = '';
     },
     equalsOnPress(event){
-        calculator._display.innerHTML = calculator._calculatedDisplay.innerHTML; // make the calculated number appear big
-        calculator._calculatedDisplay.innerHTML = ""; //remove the small display until further calculation
+        calculator._display.innerHTML = calculator.calculatedDisplay; // make the calculated number appear big
+        calculator.calculatedDisplay = ""; //remove the small display until further calculation
         calculator._calculation = calculator.display //replace the calculation with the result of the calculation to prevent issues when operating on this value
         calculator.equalsReset = true;
     },
