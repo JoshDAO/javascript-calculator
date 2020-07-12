@@ -22,6 +22,7 @@ main {
 #display-container {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     height: 20%;
     background-color: black;
     border-radius: 5px;
